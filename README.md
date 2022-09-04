@@ -15,14 +15,20 @@ npm install voxelchain-formats
 ````ts
 import * as VoxelChainFormats from "voxelchain-formats";
 
-// Load and parse binary .vxwo file
+// Load a .vxwo binary
 fetch("world.vxwo").then(resp => resp.arrayBuffer()).then(buffer => {
+  // Create an uint8 view into the buffer
   const binary = new Uint8Array(buffer);
   // Decompress the binary data
   const decompressed = VoxelChainFormats.decompressGZIP(binary);
   // Parse the binary data
-  const vxwo = VoxelChainFormats.parseVXWOFile(decompressed);
-  console.log("World data:", vxwo);
+  const parsed = VoxelChainFormats.parseVXWOFile(decompressed);
+  console.log("Parsed world:", parsed);
+  // Compile the parsed world back into binary
+  const compiled = VoxelChainFormats.compileVXWOFile(parsed);
+  // Compress the binary data
+  const compressed = VoxelChainFormats.compressGZIP(binary);
+  console.log("Re-compiled world:", compressed);
 });
 
 ````

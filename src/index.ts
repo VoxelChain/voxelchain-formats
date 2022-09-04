@@ -1,7 +1,5 @@
-/* javascript-obfuscator:disable */
 // @ts-ignore
 import {gzip, ungzip} from "pako";
-/* javascript-obfuscator:enable */
 
 /**
  * The magic bytes of a vx file

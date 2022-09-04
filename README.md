@@ -3,7 +3,7 @@
 A collection of tools to work with the [VoxelChain](https://voxelchain.app/) file formats
 
 ### Documentation:
-The documentation is auto-generated and can be found [here](https://voxelchain.github.io/voxelchain-formats/docs).
+The documentation is auto-generated and can be found [here](https://voxelchain.github.io/voxelchain-formats/).
 
 ### Installation:
 Package installation:

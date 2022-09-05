@@ -32,3 +32,25 @@ fetch("world.vxwo").then(resp => resp.arrayBuffer()).then(buffer => {
 });
 
 ````
+
+### Cell Binary Layout
+Cells are bitfields with the following layout:
+
+| Offset | Length     | Description
+|----------|---------------|-----------------
+| 0        | 8          | Material Id
+| 8        | 8          | State Data
+| 16       | 3          | Animation Index
+| 19       | 5          | Rotation Data
+| 24       | 1          | Mutation Indicator
+
+### Flow Binary Layout
+Flows are bitfields with the following layout:
+
+| Offset | Length     | Description
+|----------|---------------|-----------------
+| 0        | 4          | Power
+| 4        | 1          | Power Signal
+| 5        | 4          | Light Red-Channel
+| 9        | 4          | Light Green-Channel
+| 13       | 4          | Light Blue-Channel

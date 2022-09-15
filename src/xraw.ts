@@ -26,8 +26,9 @@ export interface IXRawFile {
 /**
  * Parse the provided xraw file
  * @param buffer - The xraw file data
+ * @param useAlphaPalette - Optionally store the palette index into the alpha-channel
  */
-export function parseXRawFile(buffer: Uint8Array): IXRawFile {
+export function parseXRawFile(buffer: Uint8Array, useAlphaPalette: boolean = false): IXRawFile {
   let byteOffset = 0x0;
   const reader = new DataView(buffer.buffer);
   // ## Magic ##
@@ -90,7 +91,7 @@ export function parseXRawFile(buffer: Uint8Array): IXRawFile {
         output[(dstIndex * 4) + 0] = paletteColorR;
         output[(dstIndex * 4) + 1] = paletteColorG;
         output[(dstIndex * 4) + 2] = paletteColorB;
-        output[(dstIndex * 4) + 3] = paletteColorA;
+        output[(dstIndex * 4) + 3] = useAlphaPalette ? paletteIndex : paletteColorA;
         //output[(voxelIndex * 1) + 0] = paletteIndex;
       }
     }

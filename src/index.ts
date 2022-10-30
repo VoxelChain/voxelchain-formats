@@ -96,4 +96,5 @@ export * from "./vxmm";
 export * from "./vxmo";
 export * from "./vxwo";
 export * from "./xraw";
+export * from "./vox";
 export * from "./utils";

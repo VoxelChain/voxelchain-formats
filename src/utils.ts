@@ -61,10 +61,11 @@ export function indexToVoxelPosition(index: number, resolution: number): Uint32A
 /**
  * Extracts the magic bytes from the provided buffer
  * @param buffer - The buffer to extract the magic from
+ * @param byteOffset - Optional byte offset to start at
  */
-export function getBufferMagic(buffer: Uint8Array): string {
+export function getBufferMagic(buffer: Uint8Array, byteOffset: number = 0x0): string {
   const viewU8 = new Uint8Array(buffer.buffer);
-  const magic = new TextDecoder("utf-8").decode(viewU8.subarray(0x0, 0x4));
+  const magic = new TextDecoder("utf-8").decode(viewU8.subarray(byteOffset, byteOffset + 0x4));
   return magic;
 }
 

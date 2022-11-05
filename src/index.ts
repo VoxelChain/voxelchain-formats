@@ -1,3 +1,14 @@
+export * from "./const";
+export * from "./utils";
+
+export * from "./vx";
+export * from "./vxma";
+export * from "./vxmm";
+export * from "./vxmo";
+export * from "./vxwo";
+export * from "./xraw";
+export * from "./vox";
+
 /**
  * Interface representing a post processing state
  */
@@ -89,12 +100,3 @@ export const DEFAULT_OPTIONS_POST_PROCESSING_STATE: Required<IPostProcessingStat
   backfaceGridIntensity: 0.25,
   autoFocusSpeed: 50,
 });
-
-export * from "./vx";
-export * from "./vxma";
-export * from "./vxmm";
-export * from "./vxmo";
-export * from "./vxwo";
-export * from "./xraw";
-export * from "./vox";
-export * from "./utils";

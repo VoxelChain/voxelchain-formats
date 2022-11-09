@@ -111,6 +111,10 @@ export interface IVOXFileMetalMaterial {
    * The roughness of the metal material
    */
   roughness: number;
+  /**
+   * The specular level of the metal material
+   */
+  specular: number;
 }
 
 /**
@@ -315,6 +319,7 @@ export function parseVOXFile(buffer: Uint8Array): IVOXFile {
             normalizedMaterial.metal = {
               metalness: (material.metalness ? material.metalness : 0),
               roughness: (material.roughness ? material.roughness : 0),
+              specular: (material.specular ? material.specular : 1),
             };
           } break;
           case "emissive": {
@@ -391,7 +396,7 @@ export function compileVOXMaterialBuffer(materials: IVOXFileMaterial[]): Uint8Ar
         buffer[index4 + 0] = MATERIAL_INDEX_METAL;
         buffer[index4 + 1] = Math.floor(m.metal.metalness * 255);
         buffer[index4 + 2] = Math.floor(m.metal.roughness * 255);
-        buffer[index4 + 3] = 0;
+        buffer[index4 + 3] = Math.floor((m.metal.specular - 1) * 255);
       } break;
       case "emissive": {
         buffer[index4 + 0] = MATERIAL_INDEX_EMISSION;

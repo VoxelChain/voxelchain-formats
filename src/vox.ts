@@ -219,7 +219,12 @@ export function parseVOXFile(buffer: Uint8Array): IVOXFile {
   let palette = DEFAULT_PALETTE;
   let imap = DEFAULT_IMAP;
   let data: Uint8Array = null;
-  const materials: IVOXFileMaterial[] = [...Array(PALETTE_LENGTH)].map(_ => null);
+  const materials: IVOXFileMaterial[] = [...Array(PALETTE_LENGTH)].map(_ => {
+    // Default to diffuse material
+    const material: any = {};
+    material.type = "diffuse";
+    return material;
+  });
   // Read chunks until EOF
   while (byteOffset < buffer.byteLength) {
     let chunkByteOffset = byteOffset;

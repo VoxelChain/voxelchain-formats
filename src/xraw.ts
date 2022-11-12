@@ -64,7 +64,7 @@ export function parseXRawFile(buffer: Uint8Array, useAlphaPalette: boolean = fal
     for (let yy = 0; yy < height; ++yy) {
       for (let xx = 0; xx < width; ++xx) {
         const srcIndex = (zz * width) + (yy * width * depth) + xx;
-        const dstIndex = (xx * width * height) + (yy * width) + zz;
+        const dstIndex = (yy * width * depth) + (zz * width) + xx;
         voxels[dstIndex] = reader.getUint8(voxelDataOffset + srcIndex);
       }
     }

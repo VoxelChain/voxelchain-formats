@@ -39,22 +39,26 @@ export function bitfieldInsert(base: number, insert: number, offset: number, len
  * @param x - The voxel-space x-axis coordinate to convert
  * @param y - The voxel-space y-axis coordinate to convert
  * @param z - The voxel-space z-axis coordinate to convert
- * @param resolution - The resolution of the voxel coordinates to convert
+ * @param width - The width of the voxel coordinates to convert
+ * @param height - The height of the voxel coordinates to convert
+ * @param depth - The depth of the voxel coordinates to convert
  */
-export function voxelPositionToIndex(x: number, y: number, z: number, resolution: number): number {
-  return (z * resolution * resolution) + (y * resolution) + x;
+export function voxelPositionToIndex(x: number, y: number, z: number, width: number, height: number, depth: number): number {
+  return (z * width * height) + (y * width) + x;
 }
 
 /**
  * Converts the provided 1D index into the relative voxel-space 3D position
  * @param index - The 1D voxel index to convert
- * @param resolution - The resolution of the voxel index to convert
+ * @param width - The width of the voxel index to convert
+ * @param height - The height of the voxel index to convert
+ * @param depth - The depth of the voxel index to convert
  */
-export function indexToVoxelPosition(index: number, resolution: number): Uint32Array {
+export function indexToVoxelPosition(index: number, width: number, height: number, depth: number): Uint32Array {
   return new Uint32Array([
-    Math.floor(index % resolution),
-    Math.floor((index / resolution) % resolution),
-    Math.floor(index / (resolution * resolution))
+    Math.floor(index % width),
+    Math.floor((index / width) % height),
+    Math.floor(index / (width * height))
   ]);
 }
 

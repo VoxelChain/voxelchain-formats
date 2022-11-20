@@ -21,7 +21,7 @@ export function isVXMAFile(buffer: Uint8Array): boolean {
  */
 export interface IVXMA {
   /**
-   * The id (0-255) of the material
+   * The id (0-1024) of the material
    */
   id: number;
   /**
@@ -95,7 +95,7 @@ export function parseVXMAFile(buffer: Uint8Array): IVXMAFile {
   byteOffset += header.byteLength;
   // ## Header ##
   //  Id
-  const id = view.getUint8(byteOffset); byteOffset += 1 * Uint8Array.BYTES_PER_ELEMENT;
+  const id = view.getUint16(byteOffset, true); byteOffset += 1 * Uint16Array.BYTES_PER_ELEMENT;
   //  Density
   const density = view.getUint8(byteOffset); byteOffset += 1 * Uint8Array.BYTES_PER_ELEMENT;
   //  Conductivity
@@ -177,7 +177,7 @@ export function compileVXMAFile(file: IVXMAFile): Uint8Array {
     byteLength += header.byteLength;
     // ## Header ##
     //  Id
-    byteLength += 1 * Uint8Array.BYTES_PER_ELEMENT;
+    byteLength += 1 * Uint16Array.BYTES_PER_ELEMENT;
     //  Density
     byteLength += 1 * Uint8Array.BYTES_PER_ELEMENT;
     //  Conductivity
@@ -213,7 +213,7 @@ export function compileVXMAFile(file: IVXMAFile): Uint8Array {
     buffer.set(header.data, byteOffset); byteOffset += header.byteLength;
     // ## Header ##
     //  Id
-    view.setUint8(byteOffset, material.id); byteOffset += 1 * Uint8Array.BYTES_PER_ELEMENT;
+    view.setUint16(byteOffset, material.id, true); byteOffset += 1 * Uint16Array.BYTES_PER_ELEMENT;
     //  Density
     view.setUint8(byteOffset, material.density); byteOffset += 1 * Uint8Array.BYTES_PER_ELEMENT;
     //  Conductivity

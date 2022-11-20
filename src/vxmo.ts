@@ -35,9 +35,9 @@ export interface IVXMO {
    */
   outputRemap: Uint8Array;
   /**
-   * The binary decision diagram of the module
+   * The truth table of the module
    */
-  bdd: Uint32Array[];
+  tt: Uint32Array;
 }
 
 /**
@@ -49,7 +49,7 @@ export const DEFAULT_OPTIONS_IVXMO: Required<IVXMO> = Object.freeze({
   output: null,
   outputRemap: null,
   code: null,
-  bdd: null,
+  tt: null,
 });
 
 /**
@@ -101,17 +101,17 @@ export function parseVXMOFile(buffer: Uint8Array): IVXMOFile {
   const outputRemapByteOffset = view.getUint32(byteOffset, true); byteOffset += 1 * Uint32Array.BYTES_PER_ELEMENT;
   //  Output remap data length
   const outputRemapByteLength = view.getUint32(byteOffset, true); byteOffset += 1 * Uint32Array.BYTES_PER_ELEMENT;
-  //  BDD data count
-  const bddDataCount = view.getUint32(byteOffset, true); byteOffset += 1 * Uint32Array.BYTES_PER_ELEMENT;
-  //  BDD data offsets & lengths
-  const bddByteLocations: [number, number][] = [];
-  //  BDD data offsets & lengths
-  for (let ii = 0; ii < bddDataCount; ++ii) {
-    //  BDD data offsets
-    const bddByteOffset = view.getUint32(byteOffset, true); byteOffset += 1 * Uint32Array.BYTES_PER_ELEMENT;
-    //  BDD data lengths
-    const bddByteLength = view.getUint32(byteOffset, true); byteOffset += 1 * Uint32Array.BYTES_PER_ELEMENT;
-    bddByteLocations.push([bddByteOffset, bddByteLength]);
+  //  TT data count
+  const ttDataCount = view.getUint32(byteOffset, true); byteOffset += 1 * Uint32Array.BYTES_PER_ELEMENT;
+  //  TT data offsets & lengths
+  const ttByteLocations: [number, number][] = [];
+  //  TT data offsets & lengths
+  for (let ii = 0; ii < ttDataCount; ++ii) {
+    //  TT data offsets
+    const ttByteOffset = view.getUint32(byteOffset, true); byteOffset += 1 * Uint32Array.BYTES_PER_ELEMENT;
+    //  TT data lengths
+    const ttByteLength = view.getUint32(byteOffset, true); byteOffset += 1 * Uint32Array.BYTES_PER_ELEMENT;
+    ttByteLocations.push([ttByteOffset, ttByteLength]);
   }
   // ## Input data ##
   const inputData = new Uint32Array(buffer.buffer, inputByteOffset, inputByteLength / Uint32Array.BYTES_PER_ELEMENT);
@@ -121,18 +121,18 @@ export function parseVXMOFile(buffer: Uint8Array): IVXMOFile {
   const inputRemapData = new Uint8Array(buffer.buffer, inputRemapByteOffset, inputRemapByteLength / Uint8Array.BYTES_PER_ELEMENT);
   // ## Output remap data ##
   const outputRemapData = new Uint8Array(buffer.buffer, outputRemapByteOffset, outputRemapByteLength / Uint8Array.BYTES_PER_ELEMENT);
-  // ## BDD data ##
-  const bddData: Uint32Array[] = [];
-  for (let ii = 0; ii < bddDataCount; ++ii) {
-    const [byteOffset, byteLength] = bddByteLocations[ii];
-    bddData.push(new Uint32Array(buffer.buffer, byteOffset, byteLength / Uint32Array.BYTES_PER_ELEMENT));
+  // ## TT data ##
+  const ttData: Uint32Array[] = [];
+  for (let ii = 0; ii < ttDataCount; ++ii) {
+    const [byteOffset, byteLength] = ttByteLocations[ii];
+    ttData.push(new Uint32Array(buffer.buffer, byteOffset, byteLength / Uint32Array.BYTES_PER_ELEMENT));
   }
   const module: IVXMO = {
     input: inputData,
     inputRemap: inputRemapData,
     output: outputData,
     outputRemap: outputRemapData,
-    bdd: bddData,
+    tt: ttData[0] || null,
   };
   const file: IVXMOFile = {
     version: header.file.version,
@@ -155,12 +155,12 @@ export function compileVXMOFile(file: IVXMOFile): Uint8Array {
   let inputRemapByteOffset = 0x0;
   let outputRemapByteOffset = 0x0;
   const header = compileVXFile(file, VXMO_MAGIC);
-  const bddByteOffsets = [];
+  const ttByteOffsets = [];
   const inputData = module.input;
   const outputData = module.output;
   const inputRemapData = module.inputRemap;
   const outputRemapData = module.outputRemap;
-  const bddData = module.bdd;
+  const ttData = module.tt;
   // Find total byte length
   {
     // ## File header ##
@@ -182,12 +182,12 @@ export function compileVXMOFile(file: IVXMOFile): Uint8Array {
     byteLength += Uint32Array.BYTES_PER_ELEMENT;
     //  Output remap data length
     byteLength += Uint32Array.BYTES_PER_ELEMENT;
-    //  BDD data count
+    //  TT data count
     byteLength += 1 * Uint32Array.BYTES_PER_ELEMENT;
-    //  BDD data offsets
-    byteLength += bddData.length * Uint32Array.BYTES_PER_ELEMENT;
-    //  BDD data lengths
-    byteLength += bddData.length * Uint32Array.BYTES_PER_ELEMENT;
+    //  TT data offsets
+    byteLength += 1 * Uint32Array.BYTES_PER_ELEMENT;
+    //  TT data lengths
+    byteLength += 1 * Uint32Array.BYTES_PER_ELEMENT;
     // ## Input data ##
     byteLength = align(byteLength, Uint32Array.BYTES_PER_ELEMENT);
     inputByteOffset = byteLength;
@@ -202,11 +202,11 @@ export function compileVXMOFile(file: IVXMOFile): Uint8Array {
     // ## Output Remap data ##
     outputRemapByteOffset = byteLength;
     byteLength += outputRemapData.byteLength;
-    // ## BDD data ##
+    // ## TT data ##
     byteLength = align(byteLength, Uint32Array.BYTES_PER_ELEMENT);
-    for (let ii = 0; ii < bddData.length; ++ii) {
-      bddByteOffsets.push(byteLength);
-      byteLength += bddData[ii].byteLength;
+    for (let ii = 0; ii < 1; ++ii) {
+      ttByteOffsets.push(byteLength);
+      byteLength += ttData.byteLength;
     }
   }
   const buffer = new Uint8Array(byteLength);
@@ -232,14 +232,14 @@ export function compileVXMOFile(file: IVXMOFile): Uint8Array {
     view.setUint32(byteOffset, outputRemapByteOffset, true); byteOffset += 1 * Uint32Array.BYTES_PER_ELEMENT;
     //  Output remap data length
     view.setUint32(byteOffset, outputRemapData.byteLength, true); byteOffset += 1 * Uint32Array.BYTES_PER_ELEMENT;
-    //  BDD data count
-    view.setUint32(byteOffset, bddData.length, true); byteOffset += 1 * Uint32Array.BYTES_PER_ELEMENT;
-    //  BDD data offsets & lengths
-    for (let ii = 0; ii < bddData.length; ++ii) {
-      //  BDD data offsets
-      view.setUint32(byteOffset, bddByteOffsets[ii], true); byteOffset += 1 * Uint32Array.BYTES_PER_ELEMENT;
-      //  BDD data lengths
-      view.setUint32(byteOffset, bddData[ii].byteLength, true); byteOffset += 1 * Uint32Array.BYTES_PER_ELEMENT;
+    //  TT data count
+    view.setUint32(byteOffset, 1, true); byteOffset += 1 * Uint32Array.BYTES_PER_ELEMENT;
+    //  TT data offsets & lengths
+    for (let ii = 0; ii < 1; ++ii) {
+      //  TT data offsets
+      view.setUint32(byteOffset, ttByteOffsets[ii], true); byteOffset += 1 * Uint32Array.BYTES_PER_ELEMENT;
+      //  TT data lengths
+      view.setUint32(byteOffset, ttData.byteLength, true); byteOffset += 1 * Uint32Array.BYTES_PER_ELEMENT;
     }
     // ## Input data ##
     byteOffset = align(byteOffset, Uint32Array.BYTES_PER_ELEMENT);
@@ -255,10 +255,10 @@ export function compileVXMOFile(file: IVXMOFile): Uint8Array {
     // ## Output remap data ##
     buffer.set(new Uint8Array(outputRemapData.buffer, outputRemapData.byteOffset, outputRemapData.byteLength), byteOffset);
     byteOffset += outputRemapData.byteLength;
-    // ## BDD data ##
+    // ## TT data ##
     byteOffset = align(byteOffset, Uint32Array.BYTES_PER_ELEMENT);
-    for (let ii = 0; ii < bddData.length; ++ii) {
-      const data = bddData[ii];
+    for (let ii = 0; ii < 1; ++ii) {
+      const data = ttData;
       buffer.set(new Uint8Array(data.buffer, data.byteOffset, data.byteLength), byteOffset);
       byteOffset += data.byteLength;
     }

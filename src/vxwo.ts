@@ -38,6 +38,14 @@ export interface IVXWO {
    */
   blockSize: number;
   /**
+   * The material count
+   */
+  materialCount: number;
+  /**
+   * The material animation count
+   */
+  materialAnimationCount: number;
+  /**
    * The simulation tick rate per second
    */
   tickRate: number;
@@ -80,7 +88,7 @@ export interface IVXWO {
   /**
    * The material id array in the hand
    */
-  handMaterialIds: Uint8Array;
+  handMaterialIds: Uint32Array;
   /**
    * The current index into the hand material id array
    */
@@ -99,6 +107,8 @@ export const DEFAULT_OPTIONS_IVXWO: Required<IVXWO> = Object.freeze({
   subResolution: 0,
   subAtlasSize: 8,
   blockSize: 0,
+  materialCount: 256,
+  materialAnimationCount: 8,
   tickRate: 0,
   tick: 0,
   ioPinState: false,
@@ -156,6 +166,10 @@ export function parseVXWOFile(buffer: Uint8Array): IVXWOFile {
   const subAtlasSize = view.getUint8(byteOffset); byteOffset += 1 * Uint8Array.BYTES_PER_ELEMENT;
   //  Main-grid block size
   const blockSize = view.getUint16(byteOffset, true); byteOffset += 1 * Uint16Array.BYTES_PER_ELEMENT;
+  //  Material count
+  const materialCount = view.getUint16(byteOffset, true); byteOffset += 1 * Uint16Array.BYTES_PER_ELEMENT;
+  //  Material animation count
+  const materialAnimationCount = view.getUint8(byteOffset); byteOffset += 1 * Uint8Array.BYTES_PER_ELEMENT;
   //  Simulation tickRate
   const tickRate = view.getUint8(byteOffset); byteOffset += 1 * Uint8Array.BYTES_PER_ELEMENT;
   //  Simulation tick
@@ -210,14 +224,14 @@ export function parseVXWOFile(buffer: Uint8Array): IVXWOFile {
   // Post-processing auto focus speed
   const ppAutoFocusSpeed = view.getFloat32(byteOffset, true); byteOffset += 1 * Float32Array.BYTES_PER_ELEMENT;
   // Hand material ids
-  const handMaterialIds = new Uint8Array(8);
+  const handMaterialIds = new Uint32Array(8);
   for (let ii = 0; ii < 8; ++ii) {
-    handMaterialIds[ii] = view.getUint8(byteOffset); byteOffset += 1 * Uint8Array.BYTES_PER_ELEMENT;
+    handMaterialIds[ii] = view.getUint32(byteOffset, true); byteOffset += 1 * Uint32Array.BYTES_PER_ELEMENT;
   }
   // Hand material index
-  const handMaterialIndex = view.getUint8(byteOffset); byteOffset += 1 * Uint8Array.BYTES_PER_ELEMENT;
+  const handMaterialIndex = view.getUint32(byteOffset, true); byteOffset += 1 * Uint32Array.BYTES_PER_ELEMENT;
   // Previous hand material index
-  const previousHandMaterialIndex = view.getUint8(byteOffset); byteOffset += 1 * Uint8Array.BYTES_PER_ELEMENT;
+  const previousHandMaterialIndex = view.getUint32(byteOffset, true); byteOffset += 1 * Uint32Array.BYTES_PER_ELEMENT;
   //  Module data offset
   const moduleByteOffset = view.getUint32(byteOffset, true); byteOffset += 1 * Uint32Array.BYTES_PER_ELEMENT;
   //  Module data length
@@ -285,6 +299,8 @@ export function parseVXWOFile(buffer: Uint8Array): IVXWOFile {
     subResolution,
     subAtlasSize,
     blockSize,
+    materialCount,
+    materialAnimationCount,
     tickRate,
     tick,
     ioPinState,
@@ -347,6 +363,10 @@ export function compileVXWOFile(file: IVXWOFile): Uint8Array {
     byteLength += Uint8Array.BYTES_PER_ELEMENT;
     //  Main-grid block size
     byteLength += Uint16Array.BYTES_PER_ELEMENT;
+    //  Material count
+    byteLength += Uint16Array.BYTES_PER_ELEMENT;
+    //  Material animation count
+    byteLength += Uint8Array.BYTES_PER_ELEMENT;
     //  Simulation tickRate
     byteLength += Uint8Array.BYTES_PER_ELEMENT;
     //  Simulation tick
@@ -390,11 +410,11 @@ export function compileVXWOFile(file: IVXWOFile): Uint8Array {
     //  Post-processing autofocus speed
     byteLength += Float32Array.BYTES_PER_ELEMENT;
     //  Hand material ids
-    byteLength += 8 * Uint8Array.BYTES_PER_ELEMENT;
+    byteLength += 8 * Uint32Array.BYTES_PER_ELEMENT;
     //  Hand material index
-    byteLength += 1 * Uint8Array.BYTES_PER_ELEMENT;
+    byteLength += 1 * Uint32Array.BYTES_PER_ELEMENT;
     //  Previous hand material index
-    byteLength += 1 * Uint8Array.BYTES_PER_ELEMENT;
+    byteLength += 1 * Uint32Array.BYTES_PER_ELEMENT;
     //  Module data offset
     byteLength += Uint32Array.BYTES_PER_ELEMENT;
     //  Module data length
@@ -446,6 +466,10 @@ export function compileVXWOFile(file: IVXWOFile): Uint8Array {
     view.setUint8(byteOffset, world.subAtlasSize); byteOffset += 1 * Uint8Array.BYTES_PER_ELEMENT;
     //  Main-grid block size
     view.setUint16(byteOffset, world.blockSize, true); byteOffset += 1 * Uint16Array.BYTES_PER_ELEMENT;
+    //  Material count
+    view.setUint16(byteOffset, world.materialCount, true); byteOffset += 1 * Uint16Array.BYTES_PER_ELEMENT;
+    //  Material animation count
+    view.setUint8(byteOffset, world.materialAnimationCount); byteOffset += 1 * Uint8Array.BYTES_PER_ELEMENT;
     //  Simulation tickRate
     view.setUint8(byteOffset, world.tickRate); byteOffset += 1 * Uint8Array.BYTES_PER_ELEMENT;
     //  Simulation tick
@@ -505,13 +529,13 @@ export function compileVXWOFile(file: IVXWOFile): Uint8Array {
     view.setFloat32(byteOffset, ppData.autoFocusSpeed, true); byteOffset += 1 * Float32Array.BYTES_PER_ELEMENT;
     //  Hand material ids
     for (let ii = 0; ii < 8; ++ii) {
-      if (handMaterialIds !== null) view.setUint8(byteOffset, handMaterialIds[ii]);
-      byteOffset += 1 * Uint8Array.BYTES_PER_ELEMENT;
+      if (handMaterialIds !== null) view.setUint32(byteOffset, handMaterialIds[ii], true);
+      byteOffset += 1 * Uint32Array.BYTES_PER_ELEMENT;
     }
     //  Hand material index
-    view.setUint8(byteOffset, handMaterialIndex); byteOffset += 1 * Uint8Array.BYTES_PER_ELEMENT;
+    view.setUint32(byteOffset, handMaterialIndex, true); byteOffset += 1 * Uint32Array.BYTES_PER_ELEMENT;
     //  Previous hand material index
-    view.setUint8(byteOffset, previousHandMaterialIndex); byteOffset += 1 * Uint8Array.BYTES_PER_ELEMENT;
+    view.setUint32(byteOffset, previousHandMaterialIndex, true); byteOffset += 1 * Uint32Array.BYTES_PER_ELEMENT;
     //  Module data offset
     view.setUint32(byteOffset, moduleByteOffset, true); byteOffset += 1 * Uint32Array.BYTES_PER_ELEMENT;
     //  Module data length

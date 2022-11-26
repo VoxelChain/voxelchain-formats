@@ -193,6 +193,8 @@ export function parseVXWOFile(buffer: Uint8Array): IVXWOFile {
   const ppFilmGrain = view.getFloat32(byteOffset, true); byteOffset += 1 * Float32Array.BYTES_PER_ELEMENT;
   // Post-processing vignette
   const ppVignette = view.getFloat32(byteOffset, true); byteOffset += 1 * Float32Array.BYTES_PER_ELEMENT;
+  // Post-processing saturation
+  const ppSaturation = view.getFloat32(byteOffset, true); byteOffset += 1 * Float32Array.BYTES_PER_ELEMENT;
   // Post-processing chromatic aberration
   const ppChromaticAberration = view.getFloat32(byteOffset, true); byteOffset += 1 * Float32Array.BYTES_PER_ELEMENT;
   // Post-processing sun intensity
@@ -204,6 +206,10 @@ export function parseVXWOFile(buffer: Uint8Array): IVXWOFile {
   const ppSunColor = [ppSunColor0, ppSunColor1, ppSunColor2];
   // Post-processing fog intensity
   const ppFogIntensity = view.getFloat32(byteOffset, true); byteOffset += 1 * Float32Array.BYTES_PER_ELEMENT;
+  // Post-processing sky intensity
+  const ppSkyIntensity = view.getFloat32(byteOffset, true); byteOffset += 1 * Float32Array.BYTES_PER_ELEMENT;
+  // Post-processing day time
+  const ppDayTime = view.getFloat32(byteOffset, true); byteOffset += 1 * Float32Array.BYTES_PER_ELEMENT;
   // Post-processing sky color
   const ppSkyColor0 = view.getFloat32(byteOffset, true); byteOffset += 1 * Float32Array.BYTES_PER_ELEMENT;
   const ppSkyColor1 = view.getFloat32(byteOffset, true); byteOffset += 1 * Float32Array.BYTES_PER_ELEMENT;
@@ -281,11 +287,14 @@ export function parseVXWOFile(buffer: Uint8Array): IVXWOFile {
     exposure: ppExposure,
     filmGrain: ppFilmGrain,
     vignette: ppVignette,
+    saturation: ppSaturation,
     chromaticAberration: ppChromaticAberration,
     sunIntensity: ppSunIntensity,
     sunColor: ppSunColor,
     fogIntensity: ppFogIntensity,
     skyColor: ppSkyColor,
+    skyIntensity: ppSkyIntensity,
+    dayTime: ppDayTime,
     bloomIntensity: ppBloomIntensity,
     volumetricLight: !!ppVolumetricLight,
     FXAA: !!ppFXAA,
@@ -385,6 +394,8 @@ export function compileVXWOFile(file: IVXWOFile): Uint8Array {
     byteLength += Float32Array.BYTES_PER_ELEMENT;
     //  Post-processing vignette
     byteLength += Float32Array.BYTES_PER_ELEMENT;
+    //  Post-processing saturation
+    byteLength += Float32Array.BYTES_PER_ELEMENT;
     //  Post-processing chromatic aberration
     byteLength += Float32Array.BYTES_PER_ELEMENT;
     //  Post-processing sun intensity
@@ -392,6 +403,10 @@ export function compileVXWOFile(file: IVXWOFile): Uint8Array {
     //  Post-processing sun color
     byteLength += 3 * Float32Array.BYTES_PER_ELEMENT;
     //  Post-processing fog intensity
+    byteLength += Float32Array.BYTES_PER_ELEMENT;
+    //  Post-processing sky intensity
+    byteLength += Float32Array.BYTES_PER_ELEMENT;
+    //  Post-processing day time
     byteLength += Float32Array.BYTES_PER_ELEMENT;
     //  Post-processing sky color
     byteLength += 3 * Float32Array.BYTES_PER_ELEMENT;
@@ -499,6 +514,8 @@ export function compileVXWOFile(file: IVXWOFile): Uint8Array {
     view.setFloat32(byteOffset, ppData.filmGrain, true); byteOffset += 1 * Float32Array.BYTES_PER_ELEMENT;
     //  Post-processing vignette
     view.setFloat32(byteOffset, ppData.vignette, true); byteOffset += 1 * Float32Array.BYTES_PER_ELEMENT;
+    //  Post-processing saturation
+    view.setFloat32(byteOffset, ppData.saturation, true); byteOffset += 1 * Float32Array.BYTES_PER_ELEMENT;
     //  Post-processing chromatic aberration
     view.setFloat32(byteOffset, ppData.chromaticAberration, true); byteOffset += 1 * Float32Array.BYTES_PER_ELEMENT;
     //  Post-processing sun intensity
@@ -509,6 +526,10 @@ export function compileVXWOFile(file: IVXWOFile): Uint8Array {
     view.setFloat32(byteOffset, ppData.sunColor[2], true); byteOffset += 1 * Float32Array.BYTES_PER_ELEMENT;
     //  Post-processing fog intensity
     view.setFloat32(byteOffset, ppData.fogIntensity, true); byteOffset += 1 * Float32Array.BYTES_PER_ELEMENT;
+    //  Post-processing sky intensity
+    view.setFloat32(byteOffset, ppData.skyIntensity, true); byteOffset += 1 * Float32Array.BYTES_PER_ELEMENT;
+    //  Post-processing day time
+    view.setFloat32(byteOffset, ppData.dayTime, true); byteOffset += 1 * Float32Array.BYTES_PER_ELEMENT;
     //  Post-processing sky color
     view.setFloat32(byteOffset, ppData.skyColor[0], true); byteOffset += 1 * Float32Array.BYTES_PER_ELEMENT;
     view.setFloat32(byteOffset, ppData.skyColor[1], true); byteOffset += 1 * Float32Array.BYTES_PER_ELEMENT;

@@ -31,6 +31,14 @@ export interface IPostProcessingState {
    */
   vignette?: number;
   /**
+   * Day time factor
+   */
+  dayTime?: number;
+  /**
+   * Saturation factor
+   */
+  saturation?: number;
+  /**
    * Chromatic aberration factor
    */
   chromaticAberration?: number;
@@ -46,6 +54,10 @@ export interface IPostProcessingState {
    * Fog intensity factor
    */
   fogIntensity?: number;
+  /**
+   * Sky intensity factor
+   */
+  skyIntensity?: number;
   /**
    * Sky color values
    */
@@ -85,13 +97,16 @@ export interface IPostProcessingState {
  */
 export const DEFAULT_OPTIONS_POST_PROCESSING_STATE: Required<IPostProcessingState> = Object.freeze({
   margins: 0,
-  exposure: 24,
+  exposure: 48,
   filmGrain: 10,
   vignette: 10,
+  saturation: 100,
   chromaticAberration: 3,
   sunColor: [185, 185, 200],
   sunIntensity: 40,
   skyColor: [80, 160, 255],
+  skyIntensity: 10,
+  dayTime: 60,
   fogIntensity: 14,
   bloomIntensity: 0,
   volumetricLight: false,

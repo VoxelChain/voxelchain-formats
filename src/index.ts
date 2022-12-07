@@ -90,6 +90,10 @@ export interface IPostProcessingState {
    * Camera auto focus speed
    */
   autoFocusSpeed?: number;
+  /**
+   * Sharpen intensity
+   */
+  sharpenIntensity?: number;
 }
 
 /**
@@ -115,4 +119,5 @@ export const DEFAULT_OPTIONS_POST_PROCESSING_STATE: Required<IPostProcessingStat
   aperture: 0,
   backfaceGridIntensity: 0.25,
   autoFocusSpeed: 50,
+  sharpenIntensity: 10,
 });

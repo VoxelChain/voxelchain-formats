@@ -229,6 +229,8 @@ export function parseVXWOFile(buffer: Uint8Array): IVXWOFile {
   const ppBackfaceGridIntensity = view.getFloat32(byteOffset, true); byteOffset += 1 * Float32Array.BYTES_PER_ELEMENT;
   // Post-processing auto focus speed
   const ppAutoFocusSpeed = view.getFloat32(byteOffset, true); byteOffset += 1 * Float32Array.BYTES_PER_ELEMENT;
+  // Post-processing sharpen intensity
+  const ppSharpenIntensity = view.getFloat32(byteOffset, true); byteOffset += 1 * Float32Array.BYTES_PER_ELEMENT;
   // Hand material ids
   const handMaterialIds = new Uint32Array(8);
   for (let ii = 0; ii < 8; ++ii) {
@@ -301,6 +303,7 @@ export function parseVXWOFile(buffer: Uint8Array): IVXWOFile {
     particles: !!ppParticles,
     aperture: ppAperture,
     backfaceGridIntensity: ppBackfaceGridIntensity,
+    sharpenIntensity: ppSharpenIntensity,
     autoFocusSpeed: ppAutoFocusSpeed,
   };
   const world: IVXWO = {
@@ -421,6 +424,8 @@ export function compileVXWOFile(file: IVXWOFile): Uint8Array {
     //  Post-processing aperture
     byteLength += Float32Array.BYTES_PER_ELEMENT;
     //  Post-processing backface grid intensity
+    byteLength += Float32Array.BYTES_PER_ELEMENT;
+    //  Post-processing sharpen intensity
     byteLength += Float32Array.BYTES_PER_ELEMENT;
     //  Post-processing autofocus speed
     byteLength += Float32Array.BYTES_PER_ELEMENT;
@@ -546,6 +551,8 @@ export function compileVXWOFile(file: IVXWOFile): Uint8Array {
     view.setFloat32(byteOffset, ppData.aperture, true); byteOffset += 1 * Float32Array.BYTES_PER_ELEMENT;
     //  Post-processing backface grid intensity
     view.setFloat32(byteOffset, ppData.backfaceGridIntensity, true); byteOffset += 1 * Float32Array.BYTES_PER_ELEMENT;
+    //  Post-processing sharpen intensity
+    view.setFloat32(byteOffset, ppData.sharpenIntensity, true); byteOffset += 1 * Float32Array.BYTES_PER_ELEMENT;
     //  Post-processing auto focus speed
     view.setFloat32(byteOffset, ppData.autoFocusSpeed, true); byteOffset += 1 * Float32Array.BYTES_PER_ELEMENT;
     //  Hand material ids

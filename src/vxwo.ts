@@ -80,7 +80,7 @@ export interface IVXWO {
   /**
    * The raw simulation flow data
    */
-  flowData: Uint32Array[];
+  flowData: Uint8Array[];
   /**
    * The post processing state of the world
    */
@@ -282,8 +282,8 @@ export function parseVXWOFile(buffer: Uint8Array): IVXWOFile {
   const cellData1 = new Uint32Array(buffer.buffer, cellByteOffset + (cellByteHalfLength * 1), cellByteHalfLength / Uint32Array.BYTES_PER_ELEMENT);
   // ## Flow data ##
   const flowByteHalfLength = flowByteLength >> 1;
-  const flowData0 = new Uint32Array(buffer.buffer, flowByteOffset + (flowByteHalfLength * 0), flowByteHalfLength / Uint32Array.BYTES_PER_ELEMENT);
-  const flowData1 = new Uint32Array(buffer.buffer, flowByteOffset + (flowByteHalfLength * 1), flowByteHalfLength / Uint32Array.BYTES_PER_ELEMENT);
+  const flowData0 = new Uint8Array(buffer.buffer, flowByteOffset + (flowByteHalfLength * 0), flowByteHalfLength / Uint8Array.BYTES_PER_ELEMENT);
+  const flowData1 = new Uint8Array(buffer.buffer, flowByteOffset + (flowByteHalfLength * 1), flowByteHalfLength / Uint8Array.BYTES_PER_ELEMENT);
   const pp: IPostProcessingState = {
     margins: ppMargins,
     exposure: ppExposure,
